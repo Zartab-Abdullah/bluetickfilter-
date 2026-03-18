@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BlueTick Filter — Clean up your X feed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#08090f;
+  --s1:#0f1120;
+  --s2:#161929;
+  --border:#1e2338;
+  --accent:#3d7eff;
+  --green:#3dffaa;
+  --yellow:#ffc93d;
+  --text:#dde2f4;
+  --muted:#5a6180;
+  --display:'Syne',sans-serif;
+  --body:'Outfit',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden;}
+body::before{
+  content:"";position:fixed;inset:0;
+  background-image:linear-gradient(rgba(61,126,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(61,126,255,0.03) 1px,transparent 1px);
+  background-size:52px 52px;pointer-events:none;z-index:0;
+}
+
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,9,15,0.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 6%;
+}
+.nav-logo{font-family:var(--display);font-size:17px;font-weight:800;letter-spacing:-0.5px;}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:28px;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color 0.2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{
+  background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:8px 18px;font-family:var(--display);font-size:13px;font-weight:700;
+  text-decoration:none;transition:opacity 0.2s;letter-spacing:0.2px;
+}
+.nav-cta:hover{opacity:0.85;}
+
+.hero{
+  position:relative;z-index:1;text-align:center;
+  padding:90px 6% 50px;max-width:860px;margin:0 auto;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(61,126,255,0.08);border:1px solid rgba(61,126,255,0.2);
+  border-radius:20px;padding:6px 16px;
+  font-family:var(--display);font-size:12px;font-weight:600;
+  color:var(--accent);letter-spacing:0.5px;margin-bottom:26px;
+}
+.hero-badge::before{
+  content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 8px var(--green);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+h1{
+  font-family:var(--display);font-size:clamp(38px,7vw,70px);
+  font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:20px;
+}
+h1 em{font-style:normal;color:var(--accent);}
+.hero-sub{
+  font-size:clamp(15px,2vw,19px);font-weight:300;color:var(--muted);
+  max-width:520px;margin:0 auto 44px;line-height:1.7;
+}
+
+.download-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:16px;padding:32px 36px;
+  max-width:580px;margin:0 auto 16px;text-align:left;
+  position:relative;overflow:hidden;
+}
+.download-card::before{
+  content:"";position:absolute;top:-40px;right:-40px;
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(61,126,255,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.card-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:22px;flex-wrap:wrap;gap:10px;
+}
+.card-top h2{font-family:var(--display);font-size:19px;font-weight:800;letter-spacing:-0.3px;}
+.free-pill{
+  background:rgba(61,255,170,0.1);border:1px solid rgba(61,255,170,0.22);
+  border-radius:20px;padding:4px 12px;
+  font-family:var(--display);font-size:11px;font-weight:700;
+  color:var(--green);letter-spacing:0.3px;
+}
+.btn-download{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  background:var(--accent);color:#fff;border:none;border-radius:10px;
+  padding:15px 24px;font-family:var(--display);font-size:15px;font-weight:700;
+  text-decoration:none;cursor:pointer;letter-spacing:0.2px;margin-bottom:20px;
+  transition:opacity 0.2s,transform 0.1s;
+}
+.btn-download:hover{opacity:0.85;}
+.btn-download:active{transform:scale(0.98);}
+
+.warning{
+  display:flex;gap:10px;align-items:flex-start;
+  background:rgba(255,201,61,0.05);border:1px solid rgba(255,201,61,0.18);
+  border-radius:9px;padding:12px 14px;margin-bottom:22px;
+  font-size:13px;color:#b8902a;line-height:1.55;
+}
+.warning-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
+.warning strong{color:#e0b84a;}
+
+.steps-label{
+  font-size:11px;font-family:var(--display);font-weight:700;
+  text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);
+  margin-bottom:12px;display:block;
+}
+.install-step{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:11px 0;border-bottom:1px solid var(--border);
+}
+.install-step:last-child{border-bottom:none;}
+.sn{
+  width:24px;height:24px;border-radius:50%;flex-shrink:0;
+  background:rgba(61,126,255,0.1);border:1px solid rgba(61,126,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:11px;font-weight:700;color:var(--accent);
+  margin-top:2px;
+}
+.install-step span{font-size:13px;color:var(--muted);line-height:1.55;}
+.install-step span strong{color:var(--text);font-weight:500;}
+code{
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:4px;padding:1px 6px;font-size:12px;
+  font-family:monospace;color:var(--accent);
+}
+
+.features-section{
+  position:relative;z-index:1;
+  max-width:1080px;margin:0 auto;padding:70px 6%;
+}
+.section-label{
+  text-align:center;font-family:var(--display);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px;
+}
+.section-title{
+  text-align:center;font-family:var(--display);
+  font-size:clamp(26px,4vw,40px);font-weight:800;
+  letter-spacing:-1px;margin-bottom:46px;
+}
+.features-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;
+}
+.feat-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:14px;padding:26px;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.feat-card:hover{border-color:rgba(61,126,255,0.3);transform:translateY(-2px);}
+.feat-icon{
+  width:40px;height:40px;border-radius:9px;
+  background:rgba(61,126,255,0.1);border:1px solid rgba(61,126,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+  font-size:19px;margin-bottom:14px;
+}
+.feat-card h3{font-family:var(--display);font-size:16px;font-weight:700;margin-bottom:7px;letter-spacing:-0.2px;}
+.feat-card p{font-size:13px;color:var(--muted);line-height:1.65;font-weight:300;}
+
+.donate-section{
+  position:relative;z-index:1;
+  max-width:620px;margin:0 auto;padding:0 6% 80px;
+}
+.donate-card{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:16px;padding:32px 36px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:22px;flex-wrap:wrap;
+}
+.donate-card h2{font-family:var(--display);font-size:22px;font-weight:800;letter-spacing:-0.4px;margin-bottom:7px;}
+.donate-card h2 span{color:var(--yellow);}
+.donate-card p{font-size:13px;color:var(--muted);font-weight:300;max-width:300px;line-height:1.6;}
+.btn-coffee{
+  display:inline-flex;align-items:center;gap:8px;flex-shrink:0;
+  background:var(--yellow);color:#1a1200;border:none;border-radius:10px;
+  padding:12px 22px;font-family:var(--display);font-size:13px;font-weight:700;
+  text-decoration:none;transition:opacity 0.2s,transform 0.1s;white-space:nowrap;
+}
+.btn-coffee:hover{opacity:0.88;}
+.btn-coffee:active{transform:scale(0.97);}
+
+footer{
+  position:relative;z-index:1;border-top:1px solid var(--border);
+  padding:24px 6%;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.footer-logo{font-family:var(--display);font-size:14px;font-weight:700;}
+.footer-logo span{color:var(--accent);}
+.footer-copy{font-size:12px;color:var(--border);}
+
+@media(max-width:600px){
+  .nav-links{display:none;}
+  .donate-card{flex-direction:column;text-align:center;}
+  .download-card{padding:22px 18px;}
+  footer{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Blue<span>Tick</span> Filter</div>
+  <div class="nav-links">
+    <a href="#install">Install</a>
+    <a href="#features">Features</a>
+    <a href="#support">Support</a>
+  </div>
+  <a class="nav-cta" href="#install">Download — Free</a>
+</nav>
+
+<section class="hero" id="install">
+  <div class="hero-badge">Free browser extension</div>
+  <h1>Your feed,<br><em>your rules.</em></h1>
+  <p class="hero-sub">BlueTick Filter hides tweets from paid blue-verified accounts as you scroll. No noise. No clutter. No sign-up required.</p>
+
+  <div class="download-card">
+    <div class="card-top">
+      <h2>Download BlueTick Filter</h2>
+      <span class="free-pill">100% Free</span>
+    </div>
+
+    <a class="btn-download" href="https://zartab-abdullah.github.io/bluetickfilter/x-filter-v2.zip" download>
+      ⬇ Download Extension (.zip)
+    </a>
+
+    <div class="warning">
+      <span class="warning-icon">⚠</span>
+      <span>Edge will show a <strong>"This extension is not from the store"</strong> warning each time you open the browser. This is completely normal for manually installed extensions — just dismiss it. We are submitting to the store soon.</span>
+    </div>
+
+    <span class="steps-label">How to install — 4 steps</span>
+
+    <div class="install-step">
+      <div class="sn">1</div>
+      <span>Click the button above — a <strong>.zip file</strong> will download. Find it in your Downloads folder and <strong>unzip it</strong> (right-click → Extract All)</span>
+    </div>
+    <div class="install-step">
+      <div class="sn">2</div>
+      <span>Open <strong>Microsoft Edge</strong> and type <code>edge://extensions</code> in the address bar, then press Enter</span>
+    </div>
+    <div class="install-step">
+      <div class="sn">3</div>
+      <span>Turn on <strong>Developer mode</strong> using the toggle in the top-right corner of that page</span>
+    </div>
+    <div class="install-step">
+      <div class="sn">4</div>
+      <span>Click <strong>Load unpacked</strong> → select the unzipped <strong>x-filter-v2</strong> folder → the extension is now installed. Go to <strong>x.com</strong> and blue-tick tweets will disappear immediately</span>
+    </div>
+  </div>
+</section>
+
+<section class="features-section" id="features">
+  <p class="section-label">What it does</p>
+  <h2 class="section-title">Everything you need,<br>nothing you don't</h2>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🚫</div>
+      <h3>Auto-hides blue ticks</h3>
+      <p>The moment you open X, tweets from paid-verified accounts disappear. No setup needed — it just works.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">✅</div>
+      <h3>Whitelist who you trust</h3>
+      <p>Some verified accounts are worth keeping. Add any @username to your whitelist and their tweets stay visible.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⚡</div>
+      <h3>Instant, no lag</h3>
+      <p>Everything runs inside your browser. No servers, no delays, no impact on X's speed.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔒</div>
+      <h3>100% private</h3>
+      <p>Your whitelist never leaves your device. No account needed, no data collected, no tracking.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔄</div>
+      <h3>Syncs across devices</h3>
+      <p>Your whitelist follows your browser profile automatically. Set it once, use it everywhere.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🎛️</div>
+      <h3>One-click toggle</h3>
+      <p>Need to see everything temporarily? Hit the toggle in the popup. Filter pauses instantly.</p>
+    </div>
+  </div>
+</section>
+
+<section class="donate-section" id="support">
+  <div class="donate-card">
+    <div>
+      <h2>Free. <span>Forever.</span></h2>
+      <p>No subscriptions, no ads injected into X, no premium tiers. If it saves you from one annoying tweet, a coffee keeps this going.</p>
+    </div>
+    <a class="btn-coffee" href="https://donatr.ee/ZAC" target="_blank" rel="noopener">
+      ☕ Buy me a coffee
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Blue<span>Tick</span> Filter</div>
+  <span class="footer-copy">© 2025 BlueTick Filter</span>
+</footer>
+
+</body>
+</html>
